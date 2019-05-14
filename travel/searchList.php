@@ -3,15 +3,56 @@
     require_once("./choicesData.php");
     require_once("./secret/loginData.php");
 
+    //希望エリア
+    if(empty($_GET["pArea"])){
+        $pArea="*";
+    }
+    //取得できた場合、希望エリアの取得
+        $pArea = (int)$_GET["pArea"];
+
+    //希望アクセス手段
+    if(empty($_GET["pAccess"])){
+        $pAccess="*";
+    } else {
+    //取得できた場合、希望アクセス手段の取得
+        $pAccess = (int)$_GET["pAccess"];
+    }
+
+    //希望予算
+    if(empty($_GET["pBudget"])){
+    //取得できない場合、すべて表示
+        $pBudget="*";
+    } else {
+    //取得できた場合、希望予算の取得
+        $pBudget= (int)$_GET["pBudget"];
+    }
+
+    //検索ワード
+    if(empty($_GET["pWord"])){
+    //取得できない場合、すべて表示
+        $pWord="";
+    } else {
+    //取得できた場合、検索ワードの取得
+        $pWord = $_GET["pWord"];
+    }
+
     //エラー対応
     try{
         //データベースに接続する
         $dbh = new PDO('mysql:host=localhost;dbname=db1;charset=utf8', $user, $pass);
+        $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        //リストアップ
-        $sql = "SELECT * FROM travelPlans";
-        $stmt = $dbh->query($sql);
+        //検索してリストアップ
+        $sql = "SELECT * FROM travelPlans WHERE area = ? AND access = ? AND budget <= ? AND planDetails LIKE ?";
+        $stmt = $dbh->prepare($sql);
+        
+        $stmt -> bindValue(1, $pArea, PDO::PARAM_INT);
+        $stmt -> bindValue(2, $pAccess, PDO::PARAM_INT);
+        $stmt -> bindValue(3, $pBudget, PDO::PARAM_INT);
+        $stmt -> bindValue(4, "%".$pWord."%", PDO::PARAM_STR);
+        
+        $stmt -> execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         //print_r($result);
         
@@ -28,11 +69,15 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type"content="text/html;charset=UTF-8">
-        <title>リスト</title>
+        <title>検索結果</title>
 	</head>
 	<body>
-        <h1>旅行プランリスト</h1>
-        <a href = "search.php">プランを検索する</a><br>
+        <h1>検索結果</h1>
+        条件：希望エリア→<?= $areaName[$pArea] ?>&emsp; 
+        希望アクセス方法→<?= $accessName[$pAccess] ?>&emsp; 
+        希望予算→<?= $pBudget ?> 円以下&emsp; 
+        検索ワード→「<?= $pWord ?>」を含む
+        <br>
         <table border="1">
             <tr>
             <th>プラン名</th>
@@ -61,6 +106,8 @@
             <?php } ?>
         </table>
         <br>
-        <a href = "form.php">プランの新規登録</a>
+        
+        <a href = "form.php">プランの新規登録</a><br>
+        <a href = "index.php">一覧に戻る</a>
     </body>
 </html>

@@ -67,42 +67,42 @@
         
         プラン名：
         <?php
-            echo htmlspecialchars($data["planName"],ENT_QUOTES,"UTF-8")
+            echo htmlspecialchars($planName,ENT_QUOTES,"UTF-8")
         ?>
         <br>
         
-        地方：<?= $areaName[$data["area"]] ?>
+        地方：<?= $areaName[$area] ?>
         <br>
         
         ターミナル：
         <?php
-            echo htmlspecialchars($data["terminal"],ENT_QUOTES,"UTF-8")
+            echo htmlspecialchars($terminal,ENT_QUOTES,"UTF-8")
         ?>
         <br>
         
-        アクセス手段：<?= $accessName[$data["access"]] ?>
+        アクセス手段：<?= $accessName[$access] ?>
         <br>
         
         アクセス詳細：<br>
         <?php
-            echo nl2br(htmlspecialchars($data["accessDetails"],ENT_QUOTES,"UTF-8"))
+            echo nl2br(htmlspecialchars($accessDetails,ENT_QUOTES,"UTF-8"))
         ?>
         <br>
         
-        観光所要時間：<?= $timeName[$data["time"]] ?>
+        観光所要時間：<?= $timeName[$time] ?>
         <br>
         
         予算：
         <?php
-            if(is_numeric($data["budget"])){
-                echo number_format($data["budget"]);
+            if(is_numeric($budget)){
+                echo number_format($budget);
             }
         ?>
         円<br>
         
         詳細プランと見所：<br>
         <?php
-            echo nl2br(htmlspecialchars($data["planDetails"],ENT_QUOTES,"UTF-8"))
+            echo nl2br(htmlspecialchars($planDetails,ENT_QUOTES,"UTF-8"))
         ?>
         <br><br>
         
@@ -115,7 +115,7 @@
             }
         ?>
         
-        <br>
+        <br><br>
         
         <a href = index.php>リストに戻る</a>
     </body>
